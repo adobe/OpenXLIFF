@@ -1,0 +1,167 @@
+/*******************************************************************************
+ * Copyright (c) 2023 Maxprograms.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 1.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/org/documents/epl-v10.html
+ *
+ * Contributors:
+ *     Maxprograms - initial API and implementation
+ *******************************************************************************/
+package com.maxprograms.converters.php;
+
+import com.maxprograms.converters.Constants;
+import com.maxprograms.xml.Catalog;
+import com.maxprograms.xml.Document;
+import com.maxprograms.xml.Element;
+import com.maxprograms.xml.SAXBuilder;
+import com.maxprograms.xml.TextNode;
+import com.maxprograms.xml.XMLNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+public class Xliff2Php {
+
+    private static String xliffFile;
+    private static String encoding;
+    private static Map<String, Element> segments;
+    private static Catalog catalog;
+
+    private Xliff2Php() {
+        // do not instantiate this class
+        // use run method instead
+    }
+
+    public static List<String> run(Map<String, String> params) {
+        List<String> result = new Vector<>();
+
+        String sklFile = params.get("skeleton");
+        xliffFile = params.get("xliff");
+        encoding = params.get("encoding");
+        if (encoding == null || encoding.isEmpty()) {
+            encoding = StandardCharsets.UTF_8.name();
+        }
+
+        try {
+            catalog = new Catalog(params.get("catalog"));
+            String outputFile = params.get("backfile");
+            File f = new File(outputFile);
+            File p = f.getParentFile();
+            if (p == null) {
+                p = new File(System.getProperty("user.dir"));
+            }
+            if (!p.exists()) {
+                Files.createDirectory(p.toPath());
+            }
+            if (!f.exists()) {
+                Files.createFile(Paths.get(f.toURI()));
+            }
+            loadSegments();
+            try (FileOutputStream output = new FileOutputStream(f)) {
+                try (FileReader input = new FileReader(sklFile)) {
+                    try (BufferedReader buffer = new BufferedReader(input)) {
+                        String line = "";
+                        while ((line = buffer.readLine()) != null) {
+                            line = line + "\n";
+                            if (line.indexOf("%%%") != -1) {
+                                int index = line.indexOf("%%%");
+                                while (index != -1) {
+                                    String start = line.substring(0, index);
+                                    writeString(output, start);
+                                    line = line.substring(index + 3);
+                                    String code = line.substring(0, line.indexOf("%%%"));
+                                    line = line.substring(line.indexOf("%%%") + 3);
+                                    Element segment = segments.get(code);
+                                    if (segment == null) {
+                                        throw new IOException("Segment " + code + " not found");
+                                    }
+                                    Element source = segment.getChild("source");
+                                    Element target = segment.getChild("target");
+                                    if (target != null) {
+                                        if (segment
+                                                .getAttributeValue("approved", "no")
+                                                .equals("yes")) {
+                                            writeString(output, extractText(target));
+                                        } else {
+                                            writeString(output, extractText(source));
+                                        }
+                                    } else {
+                                        writeString(output, extractText(source));
+                                    }
+                                    index = line.indexOf("%%%");
+                                    if (index == -1) {
+                                        writeString(output, line);
+                                    }
+                                }
+                            } else {
+                                writeString(output, line);
+                            }
+                        }
+                    }
+                }
+            }
+            result.add(Constants.SUCCESS);
+        } catch (Exception e) {
+            Logger logger = LoggerFactory.getLogger(Xliff2Php.class.getName());
+            logger.error("", e);
+            result.add(Constants.ERROR);
+            result.add(e.getMessage());
+        }
+        return result;
+    }
+
+    private static String extractText(Element target) {
+        String result = "";
+        List<XMLNode> content = target.getContent();
+        Iterator<XMLNode> i = content.iterator();
+        while (i.hasNext()) {
+            XMLNode n = i.next();
+            if (n.getNodeType() == XMLNode.ELEMENT_NODE) {
+                result = result + extractText((Element) n);
+            }
+            if (n.getNodeType() == XMLNode.TEXT_NODE) {
+                result = result + ((TextNode) n).getText();
+            }
+        }
+        result = result.replace("'", "\\'");
+        result = result.replace("\"", "\\\"");
+        return result;
+    }
+
+    private static void loadSegments() throws SAXException, IOException, ParserConfigurationException {
+        segments = new Hashtable<>();
+        SAXBuilder builder = new SAXBuilder();
+        builder.setEntityResolver(catalog);
+        Document doc = builder.build(xliffFile);
+        Element root = doc.getRootElement();
+        Element body = root.getChild("file").getChild("body");
+        List<Element> units = body.getChildren("trans-unit");
+        Iterator<Element> i = units.iterator();
+        while (i.hasNext()) {
+            Element unit = i.next();
+            segments.put(unit.getAttributeValue("id"), unit);
+        }
+    }
+
+    private static void writeString(FileOutputStream output, String string) throws IOException {
+        output.write(string.getBytes(encoding));
+    }
+
+}
