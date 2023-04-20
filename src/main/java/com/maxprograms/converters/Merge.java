@@ -340,11 +340,12 @@ public class Merge {
     private static List<String> run(Map<String, String> params) {
         List<String> result = new ArrayList<>();
         File temporary = null;
+        String skeletonTempFilePath = "";
         try {
             String dataType = params.get("format");
             loadXliff(params.get("xliff"), params.get("catalog"));
-            String skl = getSkeleton();
-            params.put("skeleton", skl);
+            skeletonTempFilePath = getSkeleton();
+            params.put("skeleton", skeletonTempFilePath);
             if (checkGroups(root)) {
                 temporary = File.createTempFile("group", ".xlf");
                 removeGroups(root, doc);
@@ -423,6 +424,8 @@ public class Merge {
             result = new ArrayList<>();
             result.add(Constants.ERROR);
             result.add(e.getMessage());
+        } finally {
+            new File(skeletonTempFilePath).delete();
         }
         return result;
     }

@@ -110,6 +110,8 @@ public class Xliff2DitaMap {
                 }
                 File f = new File(values[0]);
                 Files.delete(Paths.get(f.toURI()));
+                f = new File(values[1]);
+                Files.delete(Paths.get(f.toURI()));
             }
 
             result.add(Constants.SUCCESS);
