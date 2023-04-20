@@ -17,6 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,6 +26,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -33,6 +36,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public class Utils {
 
@@ -154,11 +160,50 @@ public class Utils {
         return codes;
     }
 
+    public static void decodeZippedToFile(String dataToDecode, String filename) throws IOException {
+        Decoder decoder = Base64.getMimeDecoder();
+        byte[] decodedBytes = decoder.decode(dataToDecode);
+        ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(decodedBytes));
+        zipInputStream.getNextEntry();
+        java.nio.file.Files.copy(
+                zipInputStream,
+                new File(filename).toPath(),
+                StandardCopyOption.REPLACE_EXISTING);
+        zipInputStream.close();
+
+    }
+
     public static void decodeToFile(String dataToDecode, String filename) throws IOException {
         Decoder decoder = Base64.getMimeDecoder();
         try (FileOutputStream output = new FileOutputStream(filename)) {
             output.write(decoder.decode(dataToDecode));
         }
+    }
+
+
+    public static String encodeFromFileZipped(String filename) throws IOException {
+        File file = new File(filename);
+        int size = Math.max((int) (file.length() * 1.4), 4096);
+        byte[] buffer = new byte[size]; // Need max() for math on small files (v2.2.1)
+        int length = 0;
+        int numBytes = 0;
+        try (FileInputStream input = new FileInputStream(file)) {
+            while ((numBytes = input.read(buffer, length, size - length)) != -1) {
+                length += numBytes;
+            }
+        }
+        Encoder encoder = Base64.getMimeEncoder();
+        String encodedString = "";
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream();
+             ZipOutputStream zout = new ZipOutputStream(bout);
+        ) {
+            ZipEntry entry = new ZipEntry("zippedFile");
+            zout.putNextEntry(entry);
+            zout.write(Arrays.copyOf(buffer, length));
+            zout.closeEntry();
+            encodedString = encoder.encodeToString(bout.toByteArray());
+        }
+        return encodedString;
     }
 
     public static String encodeFromFile(String filename) throws IOException {

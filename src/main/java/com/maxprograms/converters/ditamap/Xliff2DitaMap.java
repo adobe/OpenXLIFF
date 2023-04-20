@@ -224,7 +224,7 @@ public class Xliff2DitaMap {
             // embedded skeleton
             File tmp = File.createTempFile("internal", ".skl", new File(xliffFile).getParentFile());
             tmp.deleteOnExit();
-            Utils.decodeToFile(internal.getText(), tmp.getAbsolutePath());
+            Utils.decodeZippedToFile(internal.getText(), tmp.getAbsolutePath());
             file.getChild("header").getChild("skl").addContent(new Element("external-file"));
             file.getChild("header").getChild("skl").getChild("external-file").setAttribute("href",
                     tmp.getAbsolutePath());

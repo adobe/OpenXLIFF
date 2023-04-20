@@ -388,7 +388,7 @@ public class Convert {
                     File skeleton = new File(sklName);
                     Element internal = new Element("internal-file");
                     internal.setAttribute("form", "base64");
-                    internal.addContent(Utils.encodeFromFile(skeleton.getAbsolutePath()));
+                    internal.addContent(Utils.encodeFromFileZipped(skeleton.getAbsolutePath()));
                     skl.setContent(new ArrayList<XMLNode>());
                     skl.addContent(internal);
                     Files.delete(Paths.get(skeleton.toURI()));

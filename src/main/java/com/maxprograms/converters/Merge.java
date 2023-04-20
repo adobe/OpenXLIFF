@@ -452,7 +452,7 @@ public class Merge {
                         if (internal != null) {
                             File tmp = File.createTempFile("internal", ".skl");
                             tmp.deleteOnExit();
-                            Utils.decodeToFile(internal.getText(), tmp.getAbsolutePath());
+                            Utils.decodeZippedToFile(internal.getText(), tmp.getAbsolutePath());
                             return tmp.getAbsolutePath();
                         }
                         return result;
