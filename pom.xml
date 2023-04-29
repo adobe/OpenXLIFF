@@ -6,9 +6,41 @@
 
   <groupId>com.adobe.xliff</groupId>
   <artifactId>OpenXLIFF</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
 
   <name>OpenXLIFF</name>
+  <description>An open source set of Java filters for creating, merging and validating XLIFF 1.2 and 2.0 files.</description>
+  <url>https://github.com/adobe/OpenXLIFF</url>
+
+  <!-- required metadata for publishing the Maven artifacts -->
+  <organization>
+    <name>Adobe</name>
+    <url>https://www.adobe.com</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Eclipse Public License - v 1.0</name>
+      <url>https://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Tarun Kumar Rohilla</name>
+      <email>trohilla@adobe.com</email>
+      <organization>Adobe</organization>
+      <organizationUrl>https://www.adobe.com</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/adobe/OpenXLIFF.git</connection>
+    <developerConnection>scm:git:https://github.com/adobe/OpenXLIFF.git</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/adobe/OpenXLIFF/tree/main</url>
+  </scm>
+
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -53,7 +85,7 @@
     <dependency>
       <groupId>com.adobe.xliff</groupId>
       <artifactId>XMLJava</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
@@ -122,7 +154,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-gpg-plugin</artifactId>
-          <version>1.5</version>
+          <version>3.0.1</version>
           <executions>
             <execution>
               <id>sign-artifacts</id>

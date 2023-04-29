@@ -170,7 +170,6 @@ public class Utils {
                 new File(filename).toPath(),
                 StandardCopyOption.REPLACE_EXISTING);
         zipInputStream.close();
-
     }
 
     public static void decodeToFile(String dataToDecode, String filename) throws IOException {
