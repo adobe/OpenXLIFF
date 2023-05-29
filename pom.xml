@@ -6,7 +6,7 @@
 
   <groupId>com.adobe.xliff</groupId>
   <artifactId>OpenXLIFF</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
 
   <name>OpenXLIFF</name>
   <description>An open source set of Java filters for creating, merging and validating XLIFF 1.2 and 2.0 files.</description>
@@ -121,7 +121,7 @@
           <configuration>
             <serverId>ossrh</serverId>
             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+            <autoReleaseAfterClose>true</autoReleaseAfterClose>
           </configuration>
         </plugin>
         <plugin>

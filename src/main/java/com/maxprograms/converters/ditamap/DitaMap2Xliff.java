@@ -217,7 +217,7 @@ public class DitaMap2Xliff {
 
             XMLOutputter outputter = new XMLOutputter();
 
-            if (skipped.contains(mapFile)) {
+            if (skipped.contains(mapFile) && xliffs.size() > 0) {
                 if (dataLogger != null) {
                     if (dataLogger.isCancelled()) {
                         result.add("1");
@@ -276,7 +276,6 @@ public class DitaMap2Xliff {
             }
 
             // output final XLIFF
-
             Indenter.indent(mergedRoot, 2);
             outputter.preserveSpace(true);
             File xliff = new File(xliffFile);

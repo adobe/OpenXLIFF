@@ -232,18 +232,18 @@ public class Xml2Xliff {
                 writeString("</xliff>");
             }
             output.close();
-            if (!containsText) {
-                Files.deleteIfExists(new File(skeletonFile).toPath());
-                Files.deleteIfExists(new File(xliffFile).toPath());
-                result.add(Constants.ERROR);
-                result.add(inputFile + " does not contain text");
-                if (ditaBased || rootElement.equals("svg")) {
-                    result.add("EMPTY");
-                } else {
-                    logger.warn(inputFile + " does not contain text");
-                }
-                return result;
-            }
+//            if (!containsText) {
+//                Files.deleteIfExists(new File(skeletonFile).toPath());
+//                Files.deleteIfExists(new File(xliffFile).toPath());
+//                result.add(Constants.ERROR);
+//                result.add(inputFile + " does not contain text");
+//                if (ditaBased || rootElement.equals("svg")) {
+//                    result.add("EMPTY");
+//                } else {
+//                    logger.warn(inputFile + " does not contain text");
+//                }
+//                return result;
+//            }
             result.add(Constants.SUCCESS);
         } catch (IOException | SAXException | ParserConfigurationException | URISyntaxException
                  | IllegalArgumentException e) {
