@@ -6,7 +6,7 @@
 
   <groupId>com.adobe.xliff</groupId>
   <artifactId>OpenXLIFF</artifactId>
-  <version>1.1</version>
+  <version>1.2-SNAPSHOT</version>
 
   <name>OpenXLIFF</name>
   <description>An open source set of Java filters for creating, merging and validating XLIFF 1.2 and 2.0 files.</description>
@@ -223,6 +223,12 @@
           <include>catalog/**/*.*</include>
           <include>srx/**/*.*</include>
           <include>xmlfilter/**/*.*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>com/maxprograms/converters/html/*.xml</include>
         </includes>
       </resource>
     </resources>
