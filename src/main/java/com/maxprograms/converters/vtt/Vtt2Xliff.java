@@ -90,7 +90,6 @@ public class Vtt2Xliff {
                         } else {
                             if (line.contains(" --> ")) {
                                 segTime = line;
-//                                segId++;
                                 writeSkeleton(line);
                             }
                             else if (segTime != null) {
@@ -162,84 +161,56 @@ public class Vtt2Xliff {
         int count = 1;
         Element src = new Element("src");
         src.setText(string);
-        Matcher matcher = pattern.matcher(string);
-        if (matcher.find()) {
-            List<XMLNode> newContent = new ArrayList<>();
-            List<XMLNode> content = src.getContent();
-            Iterator<XMLNode> it = content.iterator();
-            while (it.hasNext()) {
-                XMLNode node = it.next();
-                if (node.getNodeType() == XMLNode.TEXT_NODE) {
-                    TextNode t = (TextNode) node;
-                    String text = t.getText();
-                    matcher = pattern.matcher(text);
-                    if (matcher.find()) {
-                        matcher.reset();
-                        while (matcher.find()) {
-                            int start = matcher.start();
-                            int end = matcher.end();
-
-                            String s = text.substring(0, start);
-                            newContent.add(new TextNode(s));
-
-                            String tag = text.substring(start, end);
-                            Element ph = new Element("ph");
-                            ph.setAttribute("id", "" + count++);
-                            ph.setText(tag);
-                            newContent.add(ph);
-
-                            text = text.substring(end);
-                            matcher = pattern.matcher(text);
-                        }
-                        newContent.add(new TextNode(text));
-                    } else {
-                        newContent.add(node);
-                    }
-                } else {
-                    newContent.add(node);
-                }
-            }
-            src.setContent(newContent);
-        }
-        matcher = endPattern.matcher(string);
-        if (matcher.find()) {
-            List<XMLNode> newContent = new ArrayList<>();
-            List<XMLNode> content = src.getContent();
-            Iterator<XMLNode> it = content.iterator();
-            while (it.hasNext()) {
-                XMLNode node = it.next();
-                if (node.getNodeType() == XMLNode.TEXT_NODE) {
-                    TextNode t = (TextNode) node;
-                    String text = t.getText();
-                    matcher = endPattern.matcher(text);
-                    if (matcher.find()) {
-                        matcher.reset();
-                        while (matcher.find()) {
-                            int start = matcher.start();
-                            int end = matcher.end();
-
-                            String s = text.substring(0, start);
-                            newContent.add(new TextNode(s));
-
-                            String tag = text.substring(start, end);
-                            Element ph = new Element("ph");
-                            ph.setAttribute("id", "" + count++);
-                            ph.setText(tag);
-                            newContent.add(ph);
-
-                            text = text.substring(end);
-                            matcher = endPattern.matcher(text);
-                        }
-                        newContent.add(new TextNode(text));
-                    } else {
-                        newContent.add(node);
-                    }
-                } else {
-                    newContent.add(node);
-                }
-            }
-            src.setContent(newContent);
-        }
+        
+        // Process opening tags
+        count = processHtmlTags(src, count, pattern);
+        
+        // Process closing tags
+        count = processHtmlTags(src, count, endPattern);
+        
         return src.toString().replace("<src>", "").replace("</src>", "");
+    }
+
+    private static int processHtmlTags(Element src, int count, Pattern tagPattern) {
+        Matcher matcher = tagPattern.matcher(src.toString());
+        if (matcher.find()) {
+            List<XMLNode> newContent = new ArrayList<>();
+            List<XMLNode> content = src.getContent();
+            Iterator<XMLNode> it = content.iterator();
+            while (it.hasNext()) {
+                XMLNode node = it.next();
+                if (node.getNodeType() == XMLNode.TEXT_NODE) {
+                    TextNode t = (TextNode) node;
+                    String text = t.getText();
+                    matcher = tagPattern.matcher(text);
+                    if (matcher.find()) {
+                        matcher.reset();
+                        while (matcher.find()) {
+                            int start = matcher.start();
+                            int end = matcher.end();
+
+                            String s = text.substring(0, start);
+                            newContent.add(new TextNode(s));
+
+                            String tag = text.substring(start, end);
+                            Element ph = new Element("ph");
+                            ph.setAttribute("id", "" + count++);
+                            ph.setText(tag);
+                            newContent.add(ph);
+
+                            text = text.substring(end);
+                            matcher = tagPattern.matcher(text);
+                        }
+                        newContent.add(new TextNode(text));
+                    } else {
+                        newContent.add(node);
+                    }
+                } else {
+                    newContent.add(node);
+                }
+            }
+            src.setContent(newContent);
+        }
+        return count;
     }
 }
