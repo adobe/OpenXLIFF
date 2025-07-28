@@ -8,10 +8,10 @@
 	<tag hard-break="segment">br</tag>
 	<tag hard-break="segment">title</tag>
 	<tag hard-break="segment">caption</tag>
-	<tag hard-break="segment" attributes="title">table</tag>
+	<tag hard-break="segment" attributes="title;summary">table</tag>
 	<tag hard-break="segment" attributes="title">tr</tag>
 	<tag hard-break="segment" attributes="title">td</tag>
-	<tag hard-break="segment" attributes="title">th</tag>
+	<tag hard-break="segment" attributes="title;abbr">th</tag>
 	<tag hard-break="segment">dd</tag>
 	<tag hard-break="segment" attributes="title">div</tag>
 	<tag hard-break="segment" attributes="title">h1</tag>
@@ -27,13 +27,19 @@
 	<tag hard-break="segment">legend</tag>
 	<tag hard-break="segment" keep-format="yes" attributes="title">code</tag>
 	<tag hard-break="segment" attributes="value">param</tag>
-	<tag hard-break="segment" attributes="value">option</tag>
-	<tag hard-break="segment" attributes="value">input</tag>
+	<tag hard-break="segment" attributes="value;label">option</tag>
+	<tag hard-break="segment" attributes="title">select</tag>
+	<tag hard-break="segment" attributes="placeholder;title;value">input</tag>
 	<tag hard-break="segment" attributes="title;value">button</tag>
 	<tag hard-break="segment" attributes="content">meta</tag>
 	<tag hard-break="segment" keep-format="yes" attributes="title">pre</tag>
 	<tag hard-break="segment">blockquote</tag>
 	<tag hard-break="segment">address</tag>
+	<tag hard-break="segment" attributes="title">figure</tag>
+	<tag hard-break="segment" attributes="title">video</tag>
+	<tag hard-break="segment" attributes="title">audio</tag>
+	<tag hard-break="segment" attributes="label">track</tag>
+	<tag hard-break="segment" attributes="placeholder;title">textarea</tag>
 	
 	<tag hard-break="inline" ctype="image" attributes="alt;title">img</tag>
 	<tag hard-break="inline" ctype="x-link" attributes="title">a</tag>
@@ -41,5 +47,7 @@
 	<tag hard-break="inline" ctype="x-bold">strong</tag>
 	<tag hard-break="inline" ctype="x-italic">i</tag>
 	<tag hard-break="inline" ctype="x-underlined">u</tag>
-	<tag hard-break="inline" ctype="x-other">span</tag>
+	<tag hard-break="inline" ctype="x-other" attributes="title">span</tag>
+	<tag hard-break="inline" ctype="x-link" attributes="alt;title">area</tag>
+	<tag hard-break="inline" attributes="aria-label;aria-description;aria-placeholder;aria-roledescription;aria-valuetext">*</tag>
 </ini-file>

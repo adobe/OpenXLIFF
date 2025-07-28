@@ -55,6 +55,7 @@ public class FileFormats {
     public static final String SDLPPX = "Trados Studio Package";
     public static final String SDLXLIFF = "SDLXLIFF Document";
     public static final String SRT = "SRT Subtitle";
+    public static final String VTT = "VTT Subtitle";
     public static final String TS = "TS (Qt Linguist translation source)";
     public static final String TXLF = "Wordfast/GlobalLink XLIFF";
     public static final String TXML = "TXML Document";
@@ -64,7 +65,7 @@ public class FileFormats {
     public static final String XMLG = "XML (Generic)";
 
     protected static final String[] formats = {INX, ICML, IDML, DITA, HTML, JS, JSON, JAVA, MIF, OFF, OO, TEXT, PHPA,
-            PO, RC, RESX, SDLPPX, SDLXLIFF, SRT, TS, TXML, TXLF, WPML, XLIFF, XML, XMLG};
+            PO, RC, RESX, SDLPPX, SDLXLIFF, SRT, TS, TXML, TXLF, WPML, XLIFF, XML, XMLG, VTT};
 
     public static boolean isBilingual(String type) {
         return Arrays.asList(PO, SDLPPX, SDLXLIFF, TS, TXML, TXLF, WPML, XLIFF).contains(type);
@@ -236,6 +237,9 @@ public class FileFormats {
                 builder.build(file);
                 return XML;
             }
+            if (string.indexOf("WEBVTT") != -1) {
+                return VTT;
+            }
             if (string.indexOf(" --> ") != -1 && string.indexOf(':') != -1) {
                 return SRT;
             }
@@ -315,6 +319,9 @@ public class FileFormats {
         }
         if (type.equals(SRT)) {
             return "SRT";
+        }
+        if (type.equals(VTT)) {
+            return "VTT";
         }
         if (type.equals(TS)) {
             return "TS";

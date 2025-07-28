@@ -449,10 +449,30 @@ public class Html2Xliff {
         return result;
     }
 
+    private static boolean translatableAttributeContainsKey(String key) {
+        if (translatableAttributes.containsKey("*")) {
+            return true;
+        }
+        if (translatableAttributes.containsKey(key)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static List<String> translatableAttributeGetKey(String key) {
+        if (translatableAttributes.containsKey(key)) {
+            return translatableAttributes.get(key);
+        }
+        else if (translatableAttributes.containsKey("*")) {
+            return translatableAttributes.get("*");
+        }
+        return new ArrayList<String>();
+    }
+
     private static String tag(String element) {
         String result = "";
         String type = getType(element);
-        if (translatableAttributes.containsKey(type)) {
+        if (translatableAttributeContainsKey(type)) {
             result = extractAttributes(type, element);
             if (result.indexOf("\u2029") == -1) {
                 String ctype = "";
@@ -711,10 +731,10 @@ public class Html2Xliff {
             }
 
             // check for translatable attributes
-            if (translatableAttributes.containsKey(type)) {
+            if (translatableAttributeContainsKey(type)) {
                 return true;
             }
-            if (type.startsWith("/") && translatableAttributes.containsKey(type.substring(1))) {
+            if (type.startsWith("/") && translatableAttributeContainsKey(type.substring(1))) {
                 return true;
             }
             if (end < string.length()) {
@@ -750,7 +770,7 @@ public class Html2Xliff {
         String result = "<ph id=\"" + tagId++ + "\"" + ctype + ">";
         element = cleanString(element);
 
-        List<String> v = translatableAttributes.get(type);
+        List<String> v = translatableAttributeGetKey(type);
 
         StringTokenizer tokenizer = new StringTokenizer(element, "&= \t\n\r\f/", true);
         while (tokenizer.hasMoreTokens()) {
