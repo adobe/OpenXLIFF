@@ -80,7 +80,7 @@ public class EncodingResolver {
             } catch (IOException e) {
                 logger.error("Error detecting HTML encoding", e);
             }
-        } else if (fileType.equals(FileFormats.SRT)) {
+        } else if (fileType.equals(FileFormats.SRT) || fileType.equals(FileFormats.VTT)) {
             try {
                 Charset bom = getBOM(fileName);
                 if (bom != null) {
